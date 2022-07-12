@@ -59,6 +59,11 @@
         self.disableScrollingInShrinkView = [(NSNumber*)[self settingForKey:setting] boolValue];
     }
 
+    setting = @"StatusBarOverlaysWebView";
+    if ([self settingForKey:setting]) {
+        self.statusBarOverlaysWebView = [(NSNumber*)[self settingForKey:setting] boolValue];
+    }
+
     NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
     __weak CDVKeyboard* weakSelf = self;
 
@@ -183,7 +188,7 @@ static IMP WKOriginalImp;
     screen = [self.webView convertRect:screen fromView:nil];
 
     // if the webview is below the status bar, offset and shrink its frame
-    if ([self settingForKey:@"StatusBarOverlaysWebView"] != nil && ![[self settingForKey:@"StatusBarOverlaysWebView"] boolValue]) {
+    if (!self.statusBarOverlaysWebView) {
         CGRect full, remainder;
         CGRectDivide(screen, &remainder, &full, statusBar.size.height, CGRectMinYEdge);
         screen = full;
@@ -228,7 +233,7 @@ static IMP WKOriginalImp;
 
         self.shrinkView = [value boolValue];
     }
-    
+
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:self.shrinkView]
                                 callbackId:command.callbackId];
 }
@@ -243,7 +248,7 @@ static IMP WKOriginalImp;
 
         self.disableScrollingInShrinkView = [value boolValue];
     }
-    
+
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:self.disableScrollingInShrinkView]
                                 callbackId:command.callbackId];
 }
@@ -255,11 +260,26 @@ static IMP WKOriginalImp;
         if (!([value isKindOfClass:[NSNumber class]])) {
             value = [NSNumber numberWithBool:NO];
         }
-        
+
         self.hideFormAccessoryBar = [value boolValue];
     }
-    
+
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:self.hideFormAccessoryBar]
+                                callbackId:command.callbackId];
+}
+
+- (void)statusBarOverlaysWebView:(CDVInvokedUrlCommand*)command
+{
+    if (command.arguments.count > 0) {
+        id value = [command.arguments objectAtIndex:0];
+        if (!([value isKindOfClass:[NSNumber class]])) {
+            value = [NSNumber numberWithBool:NO];
+        }
+
+        self.statusBarOverlaysWebView = [value boolValue];
+    }
+
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:self.statusBarOverlaysWebView]
                                 callbackId:command.callbackId];
 }
 

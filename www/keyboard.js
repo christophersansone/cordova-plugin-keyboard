@@ -22,7 +22,7 @@
 var argscheck = require('cordova/argscheck'),
     utils = require('cordova/utils'),
     exec = require('cordova/exec');
-   
+
 var Keyboard = function() {
 };
 
@@ -47,6 +47,14 @@ Keyboard.disableScrollingInShrinkView = function(disable, success) {
         exec(success, null, "Keyboard", "disableScrollingInShrinkView", [disable]);
     } else {
         exec(success, null, "Keyboard", "disableScrollingInShrinkView", []);
+    }
+};
+
+Keyboard.statusBarOverlaysWebView = function(overlays, success) {
+    if (overlays !== null && overlays !== undefined){
+        exec(success, null, "Keyboard", "statusBarOverlaysWebView", [overlays]);
+    } else {
+        exec(success, null, "Keyboard", "statusBarOverlaysWebView", []);
     }
 };
 
